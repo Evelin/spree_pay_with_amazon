@@ -24,7 +24,7 @@
         authorization: function() {
       loginOptions =
         {scope: "profile postal_code payments:widget payments:shipping_address", popup: "true"};
-      authRequest = amazon.Login.authorize (loginOptions, "/amazon_order/address");
+      authRequest = amazon.Login.authorize (loginOptions, address_amazon_order_path);
     },
     onError: function(error) {
       // your error handling code
