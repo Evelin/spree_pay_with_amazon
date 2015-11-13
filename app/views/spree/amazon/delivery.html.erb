@@ -21,7 +21,19 @@
   <br />
 
   <div class="form-buttons" data-hook="buttons">
-    <%= submit_tag Spree.t(:place_order), :class => 'continue button primary' %>
+    <%= submit_tag Spree.t(:place_order), :class => 'continue-step button primary' %>
     <script>Spree.disableSaveOnClick();</script>
   </div>
+
+  <%= javascript_tag do -%>
+    $(".continue-step").click(function() {
+      $(this).attr('disabled', 'disabled')
+      $('form.edit_order' ).validate({
+        invalidHandler: function(e,v){
+          $('.continue-step').removeAttr('disabled')
+        }
+      });
+      $('form.edit_order' ).submit();
+    });
+  <% end %>
 <% end %>
