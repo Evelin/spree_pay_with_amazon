@@ -91,11 +91,21 @@ class Spree::AmazonController < Spree::StoreController
       else
         raise "There is a problem with your order"
       end
-      current_order.create_tax_charge!
+
+      current_order.ensure_available_shipping_rates
+      current_order.create_proposed_shipments
+      current_order.apply_free_shipping_promotion if current_order.free_shipping_promotion
+      current_order.ensure_retail_discount if current_order.retail?
+      current_order.create_tax_charge! unless current_order.retail?
+      # TODO: may be moved to another step, or to the background
+      current_order.assess_risk
+
       current_order.reload
       payment = current_order.payments.valid.first{|p| p.source_type == "Spree::AmazonTransaction"}
       payment.amount = current_order.total
       payment.save!
+
+
       @order = current_order
 
       # Remove the following line to enable the confirmation step.

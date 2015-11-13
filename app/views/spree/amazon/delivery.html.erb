@@ -11,7 +11,7 @@
     <%= render partial: 'spree/checkout/delivery', locals: {form: form} %>
   <% end %>
 <% else %>
-  <%= form_for current_order, :url => confirm_amazon_order_path, :method => :post do |form| %>
+  <%= form_for current_order, :url => confirm_amazon_order_path, :method => :post, :class => "amazon-confirm-order" do |form| %>
     <% default_delivery_option = current_order.selected_delivery_option.presence || (vanity_tag && vanity_shipping_option) || current_order.expedited_delivery_options.first.to_s %>
     <%= hidden_field_tag 'order[selected_delivery_option]', default_delivery_option %>
   <% end %>
@@ -33,7 +33,7 @@
           $('.continue-step').removeAttr('disabled')
         }
       });
-      $('form.edit_order' ).submit();
+      $('form.amazon-confirm-order').submit();
     });
   <% end %>
 <% end %>
