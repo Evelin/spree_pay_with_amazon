@@ -92,21 +92,12 @@ class Spree::AmazonController < Spree::StoreController
         raise "There is a problem with your order"
       end
 
-      # TODO: Add this to order model
-      # before_transition to: :complete, do: amazon_payments_steps
-      current_order.send(:ensure_available_shipping_rates)
-      current_order.create_proposed_shipments
-      current_order.apply_free_shipping_promotion if current_order.free_shipping_promotion
-      current_order.ensure_retail_discount if current_order.retail?
-      current_order.create_tax_charge! unless current_order.retail?
-      # TODO: may be moved to another step, or to the background
-      current_order.send(:assess_risk)
-
       current_order.reload
       payment = current_order.payments.valid.first{|p| p.source_type == "Spree::AmazonTransaction"}
       payment.amount = current_order.total
       payment.save!
 
+      current_order.before_payment_step
 
       @order = current_order
 
