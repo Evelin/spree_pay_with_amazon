@@ -21,6 +21,8 @@
   var authRequest;
   OffAmazonPayments.Button("AmazonPayButton", "<%= Spree::Config[:amazon_merchant_id] %>", {
     type: "PwA",
+    color: 'Gold',
+    size: "medium",
         authorization: function() {
       loginOptions =
         {scope: "profile postal_code payments:widget payments:shipping_address", popup: "true"};
@@ -31,3 +33,4 @@
     }
   });
 </script>
+<head>
