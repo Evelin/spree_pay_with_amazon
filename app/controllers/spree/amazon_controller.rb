@@ -100,7 +100,7 @@ class Spree::AmazonController < Spree::StoreController
       current_order.ensure_retail_discount if current_order.retail?
       current_order.create_tax_charge! unless current_order.retail?
       # TODO: may be moved to another step, or to the background
-      current_order.assess_risk
+      current_order.send(:assess_risk)
 
       current_order.reload
       payment = current_order.payments.valid.first{|p| p.source_type == "Spree::AmazonTransaction"}
