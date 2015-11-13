@@ -21,6 +21,9 @@
 
   <script>
     $( document ).ready(function() {
+      currentShippingCountryISO = "<%= current_order.try(:ship_address).try(:country).try(:iso)  %>"
+      currentShippingStateName = "<%= current_order.try(:ship_address).try(:state).try(:name)  %>"
+
       new OffAmazonPayments.Widgets.AddressBook({
         sellerId: '<%= Spree::Config[:amazon_merchant_id] %>',
         agreementType: 'orderreference',
@@ -28,10 +31,8 @@
           order_reference = orderReference.getAmazonOrderReferenceId();
         },
         onAddressSelect: function(orderReference) {
-          console.log("<%= @order %>")
-          console.log("<%= current_order %>")
-          currentShippingCountry = "US"
-          currentShippingState = "CA"
+          currentShippingCountryISO = "<%= current_order.try(:ship_address).try(:country).try(:iso)  %>"
+          currentShippingStateName = "<%= current_order.try(:ship_address).try(:state).try(:name)  %>"
           <%= render 'spree/amazon/payment' %>
         },
         design: {

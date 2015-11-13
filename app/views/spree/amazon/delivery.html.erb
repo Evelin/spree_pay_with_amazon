@@ -6,12 +6,10 @@
 <%# @copyright   Copyright (c) 2014 Amazon.com %>
 <%# @license     http://opensource.org/licenses/Apache-2.0  Apache License, Version 2.0 %>
 <%# %>
-<% if current_order.has_step?("delivery") %>
-  <%= form_for current_order, :url => confirm_amazon_order_path, :method => :post do |form| %>
+<%= form_for current_order, :url => confirm_amazon_order_path, :method => :post do |form| %>
+  <% if current_order.has_step?("delivery") %>
     <%= render partial: 'spree/checkout/delivery', locals: {form: form} %>
-  <% end %>
-<% else %>
-  <%= form_tag amazon_order_complete_path(current_order), :class => 'edit_order' do %>
+  <% else %>
     <% default_delivery_option = current_order.selected_delivery_option.presence || (vanity_tag && vanity_shipping_option) || current_order.expedited_delivery_options.first.to_s %>
     <%= hidden_field_tag 'order[selected_delivery_option]', default_delivery_option %>
 
