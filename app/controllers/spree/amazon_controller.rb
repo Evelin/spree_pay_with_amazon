@@ -92,7 +92,9 @@ class Spree::AmazonController < Spree::StoreController
         raise "There is a problem with your order"
       end
 
-      current_order.ensure_available_shipping_rates
+      # TODO: Add this to order model
+      # before_transition to: :complete, do: amazon_payments_steps
+      current_order.send(:ensure_available_shipping_rates)
       current_order.create_proposed_shipments
       current_order.apply_free_shipping_promotion if current_order.free_shipping_promotion
       current_order.ensure_retail_discount if current_order.retail?
