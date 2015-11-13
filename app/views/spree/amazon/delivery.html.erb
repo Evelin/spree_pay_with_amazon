@@ -15,7 +15,9 @@
     <% default_delivery_option = current_order.selected_delivery_option.presence || (vanity_tag && vanity_shipping_option) || current_order.expedited_delivery_options.first.to_s %>
     <%= hidden_field_tag 'order[selected_delivery_option]', default_delivery_option %>
   <% end %>
-  <%= render partial: 'spree/checkout/summary', locals: { :order => current_order} %>
+  <aside class="order-summary pull-right">
+    <%= render partial: 'spree/checkout/summary', locals: { :order => current_order} %>
+  </aside>
   <br />
 
   <div class="form-buttons" data-hook="buttons">
