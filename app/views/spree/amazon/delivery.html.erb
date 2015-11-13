@@ -6,11 +6,12 @@
 <%# @copyright   Copyright (c) 2014 Amazon.com %>
 <%# @license     http://opensource.org/licenses/Apache-2.0  Apache License, Version 2.0 %>
 <%# %>
-<%= form_for current_order, :url => confirm_amazon_order_path, :method => :post do |form| %>
-  <% if current_order.has_step?("delivery") %>
+<% if current_order.has_step?("delivery") %>
+  <%= form_for current_order, :url => confirm_amazon_order_path, :method => :post do |form| %>
     <%= render partial: 'spree/checkout/delivery', locals: {form: form} %>
-  <% else %>
-
+  <% end %>
+<% else %>
+  <%= form_tag amazon_order_complete_path(current_order), :class => 'edit_order' do %>
     <% default_delivery_option = current_order.selected_delivery_option.presence || (vanity_tag && vanity_shipping_option) || current_order.expedited_delivery_options.first.to_s %>
     <%= hidden_field_tag 'order[selected_delivery_option]', default_delivery_option %>
 
@@ -18,7 +19,8 @@
     <br />
 
     <div class="form-buttons" data-hook="buttons">
-      <%= button_tag Spree.t(:save_and_continue), :class => 'continue button primary' %>
+      <%= submit_tag Spree.t(:place_order), :class => 'continue button primary' %>
+      <script>Spree.disableSaveOnClick();</script>
     </div>
   <% end %>
 <% end %>

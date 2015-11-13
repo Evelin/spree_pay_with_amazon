@@ -28,9 +28,10 @@
           order_reference = orderReference.getAmazonOrderReferenceId();
         },
         onAddressSelect: function(orderReference) {
-          console.log(orderReference)
-          var currentShippingCountry = "US"
-          var currentShippingState = "CA"
+          console.log("<%= @order %>")
+          console.log("<%= current_order %>")
+          currentShippingCountry = "US"
+          currentShippingState = "CA"
           <%= render 'spree/amazon/payment' %>
         },
         design: {
