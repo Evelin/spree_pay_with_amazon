@@ -15,6 +15,16 @@ class Spree::AmazonController < Spree::StoreController
 
   respond_to :json
 
+  def get_selected_address
+    data = @mws.fetch_order_data
+    if data.destination && data.destination["PhysicalDestination"]
+      render json: { selectedCountryISO: data.destination["PhysicalDestination"]["CountryCode"],
+                     selectedStateName: data.destination["PhysicalDestination"]["StateOrRegion"]}
+    else
+      render json: {}
+    end
+  end
+
   def address
     current_order.state = 'cart'
     current_order.save!
@@ -76,7 +86,7 @@ class Spree::AmazonController < Spree::StoreController
         current_order.save!
         address = data.destination["PhysicalDestination"]
         first_name = address["Name"].split(" ")[0] rescue "Amazon"
-        last_name = address["Name"].split(" ")[1..10].join(" ")
+        last_name = address["Name"].split(" ")[1..10].join(" ") rescue "Amazon"
         spree_address = current_order.ship_address
         spree_address.update({
                                 "firstname" => first_name,

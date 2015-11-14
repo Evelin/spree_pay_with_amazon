@@ -21,18 +21,20 @@
 
   <script>
     $( document ).ready(function() {
-      currentShippingCountryISO = "<%= current_order.try(:ship_address).try(:country).try(:iso)  %>"
-      currentShippingStateName = "<%= current_order.try(:ship_address).try(:state).try(:name)  %>"
-
       new OffAmazonPayments.Widgets.AddressBook({
         sellerId: '<%= Spree::Config[:amazon_merchant_id] %>',
         agreementType: 'orderreference',
         onOrderReferenceCreate: function(orderReference) {
           order_reference = orderReference.getAmazonOrderReferenceId();
+          console.log('onOrderReferenceCreate')
+          console.log(order_reference)
+          getSelectedAddress(order_reference)
         },
         onAddressSelect: function(orderReference) {
-          currentShippingCountryISO = "<%= current_order.try(:ship_address).try(:country).try(:iso)  %>"
-          currentShippingStateName = "<%= current_order.try(:ship_address).try(:state).try(:name)  %>"
+          console.log('onAddressSelect')
+          console.log(orderReference)
+
+          getSelectedAddress(orderReference)
           <%= render 'spree/amazon/payment' %>
         },
         design: {
@@ -42,15 +44,28 @@
          console.log(error.getErrorMessage());
         }
       }).bind("addressBookWidgetDiv");
+
       $('#continue_to_delivery').click();
       $('#continue_to_delivery').click(function () {
         $("#deliveryOptionDiv").html('Loading...');
       });
       $('#continue_to_delivery').on('ajax:success', function(evt, data, status, xhr){
+        console.log(data)
         $("#deliveryOptionDiv").html(data);
       }).bind("ajax:error", function(evt, data, status, xhr){
         $("div#errors p").text(data);
       });
+
+      function getSelectedAddress(orderReference) {
+        $.ajax({
+          type: 'GET',
+          url: "<%= get_selected_address_amazon_order_path %>",
+          data: { order_reference: orderReference }
+        }).done(function(data){
+          currentShippingCountryISO = data.selectedCountryISO
+          currentShippingStateName = data.selectedStateName
+        })
+      }
     });
   </script>
 <% end %>

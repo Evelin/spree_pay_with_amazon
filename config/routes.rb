@@ -10,6 +10,7 @@
 Spree::Core::Engine.routes.draw do
   resource :amazon_order, only: [], controller: "amazon" do
     member do
+      get 'get_selected_address'
       get 'address'
       post 'payment'
       get 'delivery'
