@@ -28,13 +28,28 @@
           order_reference = orderReference.getAmazonOrderReferenceId();
           console.log('onOrderReferenceCreate')
           console.log(order_reference)
-          getSelectedAddress(order_reference)
+
+          $.ajax({
+            type: 'GET',
+            url: "<%= get_selected_address_amazon_order_path %>",
+            data: { order_reference: orderReference }
+          }).done(function(data){
+            currentShippingCountryISO = data.selectedCountryISO
+            currentShippingStateName = data.selectedStateName
+          })
         },
         onAddressSelect: function(orderReference) {
           console.log('onAddressSelect')
           console.log(orderReference)
 
-          getSelectedAddress(orderReference)
+          $.ajax({
+            type: 'GET',
+            url: "<%= get_selected_address_amazon_order_path %>",
+            data: { order_reference: orderReference }
+          }).done(function(data){
+            currentShippingCountryISO = data.selectedCountryISO
+            currentShippingStateName = data.selectedStateName
+          })
           <%= render 'spree/amazon/payment' %>
         },
         design: {
@@ -56,7 +71,7 @@
         $("div#errors p").text(data);
       });
 
-      function getSelectedAddress(orderReference) {
+      /*function getSelectedAddress(orderReference) {
         $.ajax({
           type: 'GET',
           url: "<%= get_selected_address_amazon_order_path %>",
@@ -65,7 +80,7 @@
           currentShippingCountryISO = data.selectedCountryISO
           currentShippingStateName = data.selectedStateName
         })
-      }
+      }*/
     });
   </script>
 <% end %>
