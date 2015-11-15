@@ -27,12 +27,12 @@
         onOrderReferenceCreate: function(orderReference) {
           order_reference = orderReference.getAmazonOrderReferenceId();
           console.log('onOrderReferenceCreate')
-          console.log(order_reference)
+          console.log(order_reference.getAmazonOrderReferenceId)
 
           $.ajax({
             type: 'GET',
             url: "<%= get_selected_address_amazon_order_path %>",
-            data: { order_reference: orderReference }
+            data: { order_reference: orderReference.getAmazonOrderReferenceId }
           }).done(function(data){
             currentShippingCountryISO = data.selectedCountryISO
             currentShippingStateName = data.selectedStateName
@@ -40,12 +40,12 @@
         },
         onAddressSelect: function(orderReference) {
           console.log('onAddressSelect')
-          console.log(orderReference)
+          console.log(orderReference.getAmazonOrderReferenceId)
 
           $.ajax({
             type: 'GET',
             url: "<%= get_selected_address_amazon_order_path %>",
-            data: { order_reference: orderReference }
+            data: { order_reference: orderReference.getAmazonOrderReferenceId }
           }).done(function(data){
             currentShippingCountryISO = data.selectedCountryISO
             currentShippingStateName = data.selectedStateName
