@@ -26,30 +26,11 @@
         agreementType: 'orderreference',
         onOrderReferenceCreate: function(orderReference) {
           order_reference = orderReference.getAmazonOrderReferenceId();
-          console.log('onOrderReferenceCreate')
-          console.log(order_reference.getAmazonOrderReferenceId)
-
-          $.ajax({
-            type: 'GET',
-            url: "<%= get_selected_address_amazon_order_path %>",
-            data: { order_reference: orderReference.getAmazonOrderReferenceId }
-          }).done(function(data){
-            currentShippingCountryISO = data.selectedCountryISO
-            currentShippingStateName = data.selectedStateName
-          })
         },
         onAddressSelect: function(orderReference) {
-          console.log('onAddressSelect')
-          console.log(orderReference.getAmazonOrderReferenceId)
+          console.log(orderReference)
+          getSelectedAddress(orderReference.getAmazonOrderReferenceId)
 
-          $.ajax({
-            type: 'GET',
-            url: "<%= get_selected_address_amazon_order_path %>",
-            data: { order_reference: orderReference.getAmazonOrderReferenceId }
-          }).done(function(data){
-            currentShippingCountryISO = data.selectedCountryISO
-            currentShippingStateName = data.selectedStateName
-          })
           <%= render 'spree/amazon/payment' %>
         },
         design: {
@@ -65,22 +46,21 @@
         $("#deliveryOptionDiv").html('Loading...');
       });
       $('#continue_to_delivery').on('ajax:success', function(evt, data, status, xhr){
-        console.log(data)
         $("#deliveryOptionDiv").html(data);
       }).bind("ajax:error", function(evt, data, status, xhr){
         $("div#errors p").text(data);
       });
 
-      /*function getSelectedAddress(orderReference) {
+      function getSelectedAddress(order_reference) {
         $.ajax({
           type: 'GET',
           url: "<%= get_selected_address_amazon_order_path %>",
-          data: { order_reference: orderReference }
+          data: { order_reference: order_reference }
         }).done(function(data){
           currentShippingCountryISO = data.selectedCountryISO
           currentShippingStateName = data.selectedStateName
         })
-      }*/
+      }
     });
   </script>
 <% end %>
