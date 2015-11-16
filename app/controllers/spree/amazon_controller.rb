@@ -37,14 +37,7 @@ class Spree::AmazonController < Spree::StoreController
     payment.source ||= Spree::AmazonTransaction.create(:order_reference => params[:order_reference], :order_id => current_order.id)
 
     payment.save!
-
-    data = @mws.fetch_order_data
-    if data.destination && data.destination["PhysicalDestination"]
-      render json: { selectedCountryISO: data.destination["PhysicalDestination"]["CountryCode"],
-                     selectedStateName: data.destination["PhysicalDestination"]["StateOrRegion"]}
-    else
-      render json: {}
-    end
+    render json: {}
   end
 
   def delivery

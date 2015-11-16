@@ -13,6 +13,11 @@ new OffAmazonPayments.Widgets.Wallet({
       type: "POST",
       url: "<%= payment_amazon_order_path %>",
       data: {"order_reference": order_reference}
+    })
+    $.ajax({
+      type: "GET",
+      url: "<%= get_selected_address_amazon_order_path  %>",
+      data: {"order_reference": order_reference}
     }).done(function(data){
       currentShippingCountryISO = data.selectedCountryISO
       currentShippingStateName = data.selectedStateName
