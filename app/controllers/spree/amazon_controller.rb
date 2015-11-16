@@ -38,7 +38,13 @@ class Spree::AmazonController < Spree::StoreController
 
     payment.save!
 
-    render json: {}.to_json
+    data = @mws.fetch_order_data
+    if data.destination && data.destination["PhysicalDestination"]
+      render json: { selectedCountryISO: data.destination["PhysicalDestination"]["CountryCode"],
+                     selectedStateName: data.destination["PhysicalDestination"]["StateOrRegion"]}
+    else
+      render json: {}
+    end
   end
 
   def delivery
