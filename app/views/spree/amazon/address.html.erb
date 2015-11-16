@@ -28,7 +28,6 @@
           order_reference = orderReference.getAmazonOrderReferenceId();
         },
         onAddressSelect: function(orderReference) {
-          foo = orderReference
           getSelectedAddress(orderReference.getAmazonOrderReferenceId)
 
           <%= render 'spree/amazon/payment' %>
