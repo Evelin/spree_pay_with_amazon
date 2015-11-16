@@ -48,15 +48,17 @@ class Spree::AmazonController < Spree::StoreController
     if data.destination && data.destination["PhysicalDestination"]
       current_order.email = "pending@amazon.com"
       address = data.destination["PhysicalDestination"]
+      country = Spree::Country.where("iso = ? OR iso_name = ?", address["CountryCode"],address["CountryCode"]).first
+      state = state_name_for(country, address["StateOrRegion"])
       spree_address = Spree::Address.new(
                               "firstname" => "Amazon",
-                              "lastname" => "User",
+                             "lastname" => "User",
                               "address1" => "TBD",
                               "phone" => "TBD",
                               "city" => address["City"],
                               "zipcode" => address["PostalCode"],
-                              "state_name" => address["StateOrRegion"],
-                              "country" => Spree::Country.where("iso = ? OR iso_name = ?", address["CountryCode"],address["CountryCode"]).first)
+                              "state_name" => state,
+                              "country" => country)
       spree_address.save!
       current_order.ship_address_id = spree_address.id
       current_order.bill_address_id = spree_address.id
@@ -88,6 +90,8 @@ class Spree::AmazonController < Spree::StoreController
         first_name = address["Name"].split(" ")[0] rescue "Amazon"
         last_name = address["Name"].split(" ")[1..10].join(" ") rescue "Amazon"
         spree_address = current_order.ship_address
+        country = Spree::Country.where("iso = ? OR iso_name = ?", address["CountryCode"],address["CountryCode"]).first
+        state = state_name_for(country, address["StateOrRegion"])
         spree_address.update({
                                 "firstname" => first_name,
                                 "lastname" => last_name,
@@ -95,8 +99,8 @@ class Spree::AmazonController < Spree::StoreController
                                 "phone" => address["Phone"] || "n/a",
                                 "city" => address["City"],
                                 "zipcode" => address["PostalCode"],
-                                "state_name" => address["StateOrRegion"],
-                                "country" => Spree::Country.find_by_iso(address["CountryCode"])})
+                                "state_name" => state,
+                                "country" => country})
         spree_address.save!
       else
         raise "There is a problem with your order"
@@ -154,5 +158,11 @@ class Spree::AmazonController < Spree::StoreController
   def check_for_current_order
     redirect_to root_path, :notice => "No Order Found" if current_order.nil?
     return true
+  end
+
+  def state_name_for(country, state)
+    state = state.downcase
+    s = country.states.find_by(name: state) || country.states.find_by(abbr: state) || country.states.where("LOWER(name) LIKE '%#{state}%' OR '%#{state}%' LIKE LOWER(name)").first
+    s.present?? s.name : state
   end
 end
