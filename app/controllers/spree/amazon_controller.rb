@@ -37,7 +37,8 @@ class Spree::AmazonController < Spree::StoreController
     payment.source ||= Spree::AmazonTransaction.create(:order_reference => params[:order_reference], :order_id => current_order.id)
 
     payment.save!
-    render json: {}
+
+    render json: {}.to_json
   end
 
   def delivery
